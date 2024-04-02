@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Test</title>
+    </head>
+<style>
+    *{
+        padding: 0;
+        margin: 0;
+        box-sizing: border-box;
+    }
+.container{
+    width: 80%;
+    margin: 0 auto;
+    border: 3px solid black;
+    min-height: 60vh;
+    max-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 4fr 1fr;
+    padding: 1em;
+    overflow: scroll;
+    max-width: 800px;
+    position: relative;
+    overflow-x: hidden;
+}
+
+.content{
+    display: grid;
+    grid-template-columns: auto 1fr;
+    grid-template-rows: 1fr;
+    column-gap: 1em;
+    position: relative;
+    left: 0px;
+    grid-area: 1 / 1 / 2 / 5;
+    overflow: scroll;
+}
+.invisible{
+    display: none;
+}
+
+.image-wrapper img , .slideshow img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    
+}
+circle:hover{
+    cursor: pointer;
+}
+
+@media(max-width: 750px){
+    .content{
+        grid-template-columns: 1fr;
+        grid-template-rows: auto 1fr;
+        column-gap: 0;
+        row-gap: 1em;
+    }
+    .image-wrapper img{
+        height: auto;
+        margin: 0 auto;
+        display: block;
+    }
+}
+@media(max-width: 400px){
+    .container{
+        width: 100%;
+        margin: 0;
+        grid-template-rows: 1fr 1fr;
+    }
+}
+.image-wrapper, slideshow{
+   width: 20em;
+   height: 30em;
+} 
+.text h2{
+    text-align: center;
+    margin-top: 0.5em;
+    font-size: 1.5rem;
+}
+
+
+</style>
+<!--     <script src="../lib/d3/d3.v7.js"></script> -->
+    <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+    <script src="https://onlinemax.github.io/timeline/data.js?version=1.0">
+        // const data = [{
+        //     date: new Date(1949,0,1),
+        //     dateString: "Le 1er Janvier 1949",
+        //     content: {
+        //         container: "div content",
+        //         image: {
+        //             container: "div image-wrapper",
+        //             img_url: "https://thechinaproject.com/wp-content/uploads/2021/08/Chiang-Kai-shek-and-Mao-Zedong.jpg",
+        //             alt_txt: "Mao Zedong révolutionnaire et le général Chiang Kai Chek lors de leur dernière rencontre",
+        //             label: "Mao Zedong révolutionnaire et le général Chiang Kai Chek lors de leur dernière rencontre"
+        //         },
+        //     text: {
+        //             container: "div text",
+        //             content: [{
+        //                 container: "h2",
+        //                 text: "1949 - Défausse de la Chine par le Japon ",
+        //             }, {
+        //                 container: "p",
+        //                 text: "Lors de la fin de la deuxième Guerre Mondiale, les Japonais, qui occupaient la Chine, ainsi que Taiwan ont été obligés de redonner l’île à la Chine. Cependant, après la guerre, à cause du massacre des japonais, ayant tué plus de 7.5 millions de chinois lors de la guerre, les communistes de Mao Zedong, prônant le partage des terres avec le peuple, se sont rebellés contre le gouvernement nationaliste chinois et ceux-ci ont été soutenus par l’URRS. Ils ont renversé le gouvernement en place et vaincu les nationalistes du général Chiang Kai-Shek, qui, le 8 décembre 1949, a décidé de se réfugier à Taiwan avec ce qu’il restait de son gouvernement, à plus de 150 km de la côte chinoise. Depuis ce jour, le gouvernement de Pékin tenterait de réunifier Taiwan et la Chine.",
+        //             }]
+        //         }
+        //     }
+        // }, {
+        //     date: new Date(1955, 5,1),
+        //     content: {
+        //         container: "div content invisible",
+        //         image: {
+        //             container: "div image-wrapper",
+        //             img_url: "https://ichef.bbci.co.uk/ace/ws/640/cpsprodpb/c99f/live/4a3b44f0-195b-11ed-894d-e96102bbb308.jpg",
+        //             label: "Le leader nationaliste Chiang Kai-shek passe en revue les troupes américaines à bord du USS Wasp dans les eaux territoriales de Taïwan.",
+        //         },
+        //         text: {
+        //             container: "div text",
+        //             content: [{
+        //                 container: "h2",
+        //                 text: "1955 - Première crise du détroit de Taiwan",
+        //             }, {
+        //                 container: "p",
+        //                 text: "Les partisans de Mao Zedong vont prendre possession de quelques îles sur le territoire de Taiwan. Cependant, ils seront vite freinée par les États-Unis, qui considère le gouvernement nationaliste présent en Taiwan comme le seul gouvernement  légitime chinois, vont menacer pékin, notamment avec la résolution de la Fermose du 29 janvier 1955, permettant au président du pays à rétablir par la force si nécéssaire la paix dans le détroit. Devant ce puissant allié et une possible menace de force nucléaire par ceux-ci, les envahisseurs renoncent à leur tentative d’annexion de Taiwan.",
+
+        //             }]
+        //         }
+        //     },
+        // }, {
+        //     date: new Date(1958,2,15),
+        //     content: {
+        //         container: "div content invisible",
+        //         image: {
+        //             container: "div image-wrapper",
+        //             img_url: "https://amcham.com.tw/wp-content/uploads/2019/03/tra-2.jpg",
+        //             alt_txt: "A random image",
+        //             label:"This is an image",
+        //         },
+        //         text: {
+        //             container: "div text",
+        //             content: [{
+        //                 container: "h2",
+        //                 text: "1958- Deuxième crise du détroit de Taiwan",
+        //             }, {
+        //                 container: "p",
+        //                 text: "Afin de vérifier la détermination des Américains à protéger Taiwan, Mao Zedong a décidé de bombarder les îles de Quemoy et de Matsu. Ceux-ci ont réagi rapidement en mettant en place une flotte militaire à Taiwan et en ravitaillant Taiwan avec de l'artillerie militaire, pouvant tirer des charges nucléaires.",
+
+        //             }]
+        //         }
+        //     }
+        // },
+        // {
+        //     date: new Date(1979,1,15),
+        //     content: {
+        //         container: "div content invisible",
+        //         image: {
+        //             container: "div image-wrapper",
+        //             img_url: "https://amcham.com.tw/wp-content/uploads/2019/03/tra-2.jpg",
+        //             alt_txt: "A random image",
+        //         },
+        //         text: {
+        //             container: "div text",
+        //             content: [{
+        //                 container: "h2",
+        //                 text: "1979- Vote du «Taiwan Relation Act",
+        //             }, {
+        //                 container: "p",
+        //                 text: "Le congrès américain garantit à Taiwan de l’aide pour la protection de leur territoire, ainsi qu’une entraide économique pour faciliter le commerce entre les deux nations.",
+        //             }]
+        //         }
+        //     }
+        //     },
+        //     {
+        //     date: new Date(1987,6,15),
+        //     content: {
+        //         container: "div content invisible",
+        //         image: {
+        //             container: "div image-wrapper",
+        //             img_url: "https://upload.wikimedia.org/wikipedia/en/thumb/6/63/Tsmc.svg/1200px-Tsmc.svg.png",
+        //             alt_txt: "A random image",
+        //             label:"",
+        //         },
+        //         text: {
+        //             container: "div text",
+        //             content: [{
+        //                 container: "h2",
+        //                 text: "1987: Création de la compagnie de puces électronique Taiwan Semiconductor Manufacturing Company(TSMC) par le gouvernement taiwanais.",
+        //             }, {
+        //                 container: "p",
+        //                 text: "Cette date est importante, car elle marque le début d’une compagnie qui est un acteur très important dans les tensions entre Taiwan et la Chine. Dans le processus de la création d’électronique, il est vital d’avoir des puces de très grandes qualités pour assurer un bon fonctionnement de l’appareil. Cependant, la création de puces coûte chère et n’est pas viable pour la plupart des «start-ups companies» en quête de nouvelles technologies. C’est pourquoi TSMC a été fondé. Cette compagnie s’occupe de la création de puces et tout ce que les clients doivent faire est de simplement lui fournir le plan de conception de la puce désirée. Ainsi, TSMC est devenue une des meilleures compagnies de création de puces dans le monde. On estime que plus de 60% de nos puces proviennent de cette compagnie et qu’elle produit 92% des puces les plus performantes sur le marché. La Chine, à cause des restrictions imposées par les États-Unis, cherche une nouvelle raison pour prendre possession de Taiwan et, par conséquent, se procurer des puces performantes. Certains d’entre vous allez vous poser la question suivante: pourquoi la Chine ne produit-elle pas ses propres puces à la place? La réponse s’explique par la loi de Moores (Moore’s law). Cette loi très simple de Gordon Earle Moore, le cofondateur d’Intel, une compagnie de puces informatiques, précise qu'à tous les deux ans, le nombre de transistors dans une puce électronique double. Un transistor est un des principaux composants de tout appareil électronique. Simplement dit, plus un appareil possède de transistors, plus la performance de l’appareil sera significative. Étant donné que la Chine est entrée dans la course à la création des meilleures puces quelques dizaines d’années après les États-Unis, les puces créées par l’Occident possèdent 32 fois plus de transistors que la Chine. Sachant qu’il peut y avoir des milliards de transistors dans une seule puce, c’est un très grand retard qu’a la Chine, expliquant sa motivation à rapatrier Taiwan, l’endroit où les puces supérieures sont fabriquées."
+        //             }]
+        //         }
+        //     }
+        // },
+        // {
+        //     date: new Date(1996,5,15),
+        //     content: {
+        //         container: "div content invisible",
+        //         image: {
+        //             container: "div image-wrapper",
+        //             img_url: "https://cdn-hub.ina.fr/notice/360x270/0ec/AFE85005980.jpeg?__=95386_95380",
+        //             alt_txt: "A random image",
+        //             label:"",
+        //         },
+        //         text: {
+        //             container: "div text",
+        //             content: [{
+        //                 container: "h2",
+        //                 text: "1996- Troisième crise de Taiwan",
+        //             }, {
+        //                 container: "p",
+        //                 text: "Après la mort de Chiang Ching-Kuo, fils de Chiang-Kai-Shek, Taiwan est devenu une démocratie et Lee Teng-Hui est devenu président de la République de Chine. De plus, avec la visite aux États-Unis du nouveau président taiwannais, le gouvernement chinois, voyant qu’il a perdu de l’influence sur ce pays, a fait des tirs à blanc près de la côte taiwannaise afin de l’intimider. Cependant, grâce à la réaction rapide du président Clinton, aucun affrontement ne s’est produit. De fait, l’ancien président américain a envoyé des porte-avions au pays allié pour décourager la Chine à attaquer Taiwan, ce qui a porté fruit."
+        //             }]
+        //         }
+        //     }
+        // }
+
+
+    // ];
+    </script>
+    <script>
+        function getAttributes(info) {
+            const atr = info.split(" ");
+            return {
+                node: atr.shift(),
+                className: atr.join(" "),
+            };
+        }
+        function preloadImage(url){
+                new Image().src = url;        
+        }
+        function prepareImage(image, container) {
+            preloadImage(image.img_url);
+            if (container == null){
+                return {img_url: image.img_url, alt_txt: image.alt_txt, label: image.label};
+            }
+            const info = getAttributes(image.container);
+            let element, t;
+            if (info.className != null) {
+                element = document.createElement(info.node);
+                element.setAttribute("class", info.className);
+            }
+            if (element == null)
+                return;
+            if (image.label != null){
+                t = document.createElement("span");
+                t.classList.add("label");
+                t.innerHTML = image.label;
+            }
+            const img = document.createElement("img");
+            img.setAttribute("src", image.img_url ?? "");
+            img.setAttribute("alt", image.alt_txt ?? "");
+            element.appendChild(img);
+            if (t != null)
+                element.appendChild(t);
+            container.appendChild(element);
+            }
+           function prepareSlideshow(data, ctn){
+           const slideshow = {};
+           const container = document.createElement("div");
+           slideshow.pointers = new Array(2);
+           slideshow.image = document.createElement("img");
+           slideshow.buttons = document.createElement("div");
+           slideshow.label = document.createElement("span");
+           slideshow.label.classList.add("label");
+           slideshow.index = 0;
+           const len = data.length;
+           container.classList.add("slideshow");
+           for (let i = 0; i < 2; i++){
+                slideshow.pointers[i] = document.createElement("div"); 
+                slideshow.pointers[i].classList.add("pointer_" + (i == 0 ? "left" : "right"));
+                const logo = document.createElement("img");
+                logo.setAttribute("src", i == 0 ? "img/reshot-icon-arrow-left-4NA6KJF8CU.svg" : "img/reshot-icon-arrow-right-ZP2WDL9B8N.svg") 
+                slideshow.pointers[i].appendChild(logo);
+                container.appendChild(slideshow.pointers[i]);
+                slideshow.pointers[i].addEventListener("click", function(){
+                     if (i == 0)
+                        slideshow.index += 1;
+                     else 
+                        slideshow.index -= 1;
+                    slideshow.index = slideshow.index == -1 ? len - 1 : slideshow.index;
+                    slideshow.index %= len;
+                    slideshow.image.setAttribute("src", slideshow.images[slideshow.index].img.img_url);
+                    slideshow.image.setAttribute("alt", slideshow.images[slideshow.index].img.alt_txt);
+                    slideshow.label.innerHTML = slideshow.images[slideshow.index].label;
+                    for (let i = 0; i < len; i++){
+                        if (i == slideshow.index){
+                            slideshow.buttons.childNodes.item(i).classList.add("selected");
+                        }
+                        else
+                            slideshow.buttons.childNodes.item(i).classList.remove("selected");
+                    }
+                });
+            }
+            slideshow.buttons.classList.add("buttons_container");
+            slideshow.buttons.style.width = `${len}rem`;
+            container.appendChild(slideshow.image);
+            container.appendChild(slideshow.buttons);
+            const createButton = () =>{
+                const btn = document.createElement("div")
+                btn.classList.add("slideshow_circle");
+                return btn;
+            }
+           slideshow.images = [];
+           for (let i = 0; i < len; i++){
+                const image = prepareImage(data[i]);
+                slideshow.images.push({img: image, label: image.label});
+                slideshow.buttons.appendChild(createButton());
+           }
+           slideshow.image.setAttribute("src", slideshow.images[0].img.img_url)
+           slideshow.image.setAttribute("alt", slideshow.images[0].img.alt_txt)
+           slideshow.label.innerHTML = slideshow.images[0].label;
+           container.appendChild(slideshow.label);
+           ctn.appendChild(container);
+        }
+        
+        function prepareText(text, container) {
+            if (text.container == null)
+                return;
+            const info = getAttributes(text.container);
+
+            const element = document.createElement(info.node);
+            element.setAttribute("class", info.className);
+            text.content.forEach(c=>{
+                const info = getAttributes(c.container);
+                const el = document.createElement(info.node);
+                if (info.className != "")
+                    el.setAttribute("class", info.className);
+                el.innerHTML = c.text;
+                element.appendChild(el);
+            }
+            );
+            container.appendChild(element);
+        }
+        function parseData() {
+            const container = document.querySelector(".container");
+            data.forEach(d=>{
+                if (d.content == null)
+                    return;
+                const info = getAttributes(d.content.container);
+                const element = document.createElement(info.node);
+                element.setAttribute("class", info.className);
+                if (d.content.slideshow != null)
+                    prepareSlideshow(d.content.slideshow, element);
+                if (d.content.image != null)
+                    prepareImage(d.content.image, element);
+                if (d.content.text != null)
+                    prepareText(d.content.text, element);
+                container.appendChild(element);
+            }
+            );
+        }
+    </script>
+    <script type="module">
+        parseData();
+        function changeScaling(domain, range){
+            x.domain(domain);
+            x.range(range);
+        }
+        function inBound(range, val){
+            return val >= range[0] && val <= range[1];
+        }
+        function filterRange(range, data){
+            return data.filter(d => inBound(range, d.date));
+        }
+        function getDomainFromDate(date){
+            return [
+                new Date(date.getYear() +  (viewportWidth <= 400 ? 1898 : 1895), date.getMonth(), date.getDate()),
+                new Date(date.getYear() + (viewportWidth <= 400 ? 1902 : 1905), date.getMonth(), date.getDate())
+            ];
+        }
+        function updateTimeline(){
+           select.select(".year")
+                        .call(yearAxis);
+                select.select(".month")
+                    .call(monthAxis);
+                d3.selectAll("circle")
+                        .attr("cx", function(d){return x(d.date) + offset;})
+                        .attr("r", function(d, i){
+                                if (Math.abs(x(d.date) - width / 2) <= 1.5){
+                                        traverse.currentData = i;
+                                        return 2;
+                                }
+                                return 1.5;
+                        })
+                        .attr("fill", function(d, i){
+                              if (Math.abs(x(d.date) - width / 2) <= 1.5){
+                                        traverse.currentData = i;
+                                        return "blue";
+                                }
+                                return "red";  
+                        });
+        }
+
+        function transitionateToEvent(index){
+            if (index < 0 || index >= data.length)
+                return;
+            const t = d3.transition().duration(750);
+            const current = traverse.currentData;
+            const deplacement = index - current;
+            d3.selectAll(".content")
+                .filter((d, i) => Math.min(current, index) <= i && i <= Math.max(current, index))
+                .classed("invisible", false)
+                .style("left", (d, i) => `${(deplacement < 0) ? (deplacement + i) * contentWidth : i * contentWidth}px`)
+                .transition(t)
+                .style("left", (d, i) => `${(deplacement < 0) ? i * contentWidth : (i - deplacement) * contentWidth}px`)
+                .selection()
+                .classed("invisible", (d, i) => {(deplacement < 0) ? 0 : deplacement});
+            traverse.currentData = index;
+            changeScaling(domain(), range);
+            select.select(".year")
+                .transition(t)
+                .call(yearAxis);
+            select.select(".month")
+                .transition(t)
+                .call(monthAxis);
+            d3.selectAll("circle")
+                .transition(t)
+                .attr("cx", function(d){return x(d.date) + offset})
+                .attr("r", function(d, i){
+                    return (i != traverse.currentData) ? 1.5 : 2; 
+                })
+                .attr("fill", function(d, i){
+                    return (i != traverse.currentData) ? "red" : "blue"; 
+                });
+             
+           
+        }
+        
+        
+        function axisProperty(scale, innerSize, outerSize, offset, ticks, format){
+                return d3.axisBottom(scale)
+                        .tickSizeInner(innerSize)
+                        .tickSizeOuter(outerSize)
+                        .offset(offset)
+                        .ticks(ticks)
+                        .tickFormat(format)
+        }
+        const drag = {
+            dragging: false,
+            onStart: function(evt){
+                this.dragging = true;
+            },
+            onDrag: function(evt){
+                if (!this.dragging)
+                    return;
+                
+                const deltaDate = x.invert(-evt.dx).getTime() - x.invert(0).getTime();
+                const domain = x.domain();
+                
+                const middle = (domain[0].getTime() + domain[1].getTime()) / 2;
+                if ((deltaDate < 0 && data[0].date.getTime() >= middle) ||
+                    (deltaDate > 0 && data[data.length - 1].date.getTime() <= middle)){
+                        changeScaling(getDomainFromDate(data[traverse.currentData].date), range);
+                        updateTimeline();
+                        this.mousex = evt.sourceEvent.screenX;        
+                        return;
+                }
+                changeScaling(domain.map(date => date.setTime(date.getTime() + deltaDate)), range);
+                updateTimeline();
+                
+            },
+                
+            onEnd: function(evt){
+                this.dragging = false;
+            },
+        }
+        const viewportWidth = window.innerWidth;
+        const viewportHeight = window.innerHeight;
+        const contentWidth = Number.parseInt(window.getComputedStyle(d3.select(".container").node()).paddingInline) + Number.parseInt(window.getComputedStyle(d3.select(".content").node()).width);
+        const width = 300;
+        const height = 50;
+        const offset = 5;
+        const range = [0, width];
+        const traverse = {
+            currentData: 0,
+        };           
+        
+        const domain = function(){
+            return getDomainFromDate(data[traverse.currentData].date);
+        }; 
+        const tickSize = offset * 2;
+        const x = d3.scaleTime(domain(), range);
+        const yearAxis = axisProperty(x, tickSize, 0, offset, d3.timeYear.every(1), null);
+        const monthAxis =axisProperty(x, tickSize * 2 / 3, 0, offset * 2 / 3, d3.timeMonth.every(2), "");
+        const select = d3.select(".timeline svg");
+        
+        console.log(contentWidth);
+        select.attr("width", "100%")
+            .attr("viewBox", `0 0 ${width} ${height}`)
+            .append("g")
+                .attr("transform", `translate(0, ${height / 2})`)
+                .attr("class", "year")
+                .call(yearAxis);
+        select.append("g")
+                .attr("transform", `translate(${offset / 3}, ${height / 2 + offset / 3})`)
+                .attr("class", "month")
+                .call(monthAxis);
+        select.append("line")
+              .attr("x1", width / 2 + offset)
+              .attr("x2", width / 2 + offset)
+              .attr("y1", (height + 3 * tickSize) / 2)
+              .attr("y2", (height - tickSize) / 2)
+              .style("stroke", "red")
+              .style("stroke-width", 1);
+        
+        select.selectAll("circle")
+              .data(data)
+              .enter()
+              .append("circle")
+              .attr("cx", (d) => x(d.date) + offset)
+                 .attr("cy", (height + tickSize) / 2 )
+              .attr("r", function(d, i){
+                    return (i != traverse.currentData) ? 1.5 : 2; 
+                })
+              .attr("fill", function(d, i){
+                    return (i != traverse.currentData) ? "red" : "blue"; 
+                })
+              .on("click", function(evt, d){
+                  transitionateToEvent(data.indexOf(d));
+              })
+        
+        d3.select("html").on("keyup", (evt) => {
+            if (evt.keyCode !== 39 && evt.keyCode !== 37)
+                return;
+           if (evt.keyCode == 39)  
+                transitionateToEvent(traverse.currentData + 1); 
+           else
+                transitionateToEvent(traverse.currentData - 1);
+            
+        });
+       
+        var movement = 0;
+        const contents = d3.selectAll(".content");
+        const drg = d3.drag()
+                      .on("start", drag.onStart)
+                      .on("drag", drag.onDrag)
+                      .on("end", drag.onEnd);
+        select.call(drg);
+        drg.container(select.node());
+    
+    
+    
+    
+    </script>
+    <body>
+        <div class="container">
+            <div class="timeline">
+                <svg></svg>
+            </div>
+        </div>
+    </body>
+</html>
