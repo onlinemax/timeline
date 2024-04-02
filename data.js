@@ -5,7 +5,7 @@ const data = [{
                 container: "div content",
                 image: {
                     container: "div image-wrapper",
-                    img_url: "https://pulse.seattlechildrens.org/wp-content/uploads/Poop-Emoji-300x294.jpg",
+                    img_url: "https://onlinemax.github.io/timeline/Control-V.png",
                     alt_txt: "Mao Zedong révolutionnaire et le général Chiang Kai Chek lors de leur dernière rencontre",
                     label: "Mao Zedong révolutionnaire et le général Chiang Kai Chek lors de leur dernière rencontre"
                 },
