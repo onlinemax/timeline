@@ -49,7 +49,7 @@ const data = [{
                     container: "div image-wrapper",
                     img_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/ff/Lockheed_F-104A_of_the_83rd_Fighter_Interceptor_Squadron_at_Taoyuan_Air_Base%2C_Taiwan%2C_on_Sept._15%2C_1958%2C_during_the_Quemoy_Crisis_-_Operation_Jonah_Able.jpg/220px-Lockheed_F-104A_of_the_83rd_Fighter_Interceptor_Squadron_at_Taoyuan_Air_Base%2C_Taiwan%2C_on_Sept._15%2C_1958%2C_during_the_Quemoy_Crisis_-_Operation_Jonah_Able.jpg",
                     alt_txt: "Un avion militaire lors de la crise",
-                    label:"This is an image",
+                    label:"Un avion militaire lors de la crise",
                 },
                 text: {
                     container: "div text",
